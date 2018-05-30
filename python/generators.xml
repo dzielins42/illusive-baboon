@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<data>
+  <random id="common.color">
+    <item>black</item>
+    <item>white</item>
+    <item>red</item>
+    <item>green</item>
+    <item>blue</item>
+  </random>
+  <random id="Alphabet">
+    <item probability="0.25">A</item>
+    <item probability="0.25">B</item>
+    <item probability="0.25">
+      <random id="Alphabet2">
+        <item probability="0.5">1</item>
+        <item probability="0.5">2</item>
+      </random>
+    </item>
+    <item probability="0.25">
+      <reference id="common.color"/>
+    </item>
+  </random>
+</data>
