@@ -31,9 +31,11 @@ public abstract class ArrayListAdapter<T, VH extends RecyclerView.ViewHolder> ex
     }
 
     public void addAll(Collection<? extends T> items) {
+        final List<T> copy = new ArrayList<>(items);
         final int insertStart = mItems.size();
-        final int insertEnd = insertStart + items.size();
-        mItems.addAll(items);
+        final int insertEnd = insertStart + copy.size();
+        mItems.addAll(copy);
+        // TODO use DiffUtil
         notifyItemRangeInserted(insertStart, insertEnd);
     }
 

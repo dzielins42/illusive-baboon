@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.hannesdorfmann.mosby3.mvi.MviActivity;
+import com.jakewharton.rxbinding2.view.RxView;
 
 import javax.inject.Inject;
 
@@ -47,8 +48,12 @@ public class GeneratorDetailsActivity
 
     @BindView(R.id.recycler)
     RecyclerView mResultsRecyclerView;
+    @BindView(R.id.fab)
+    FloatingActionButton mFloatingActionButton;
 
     private GeneratorResultsAdapter mAdapter;
+
+    private String mGeneratorId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,18 +124,26 @@ public class GeneratorDetailsActivity
 
     @Override
     public void render(GeneratorDetailsViewModel viewModel) {
+        mGeneratorId = viewModel.getGeneratorId();
         mAdapter.clear();
         mAdapter.addAll(viewModel.getResults());
     }
 
     @Override
-    public Observable<String> loadIntents() {
+    public Observable<DetailsEvent> eventsObservable() {
         String generatorId = getIntent().getStringExtra(KEY_GENERATOR_ID);
         if (TextUtils.isEmpty(generatorId)) {
             generatorId = "";
+            // TODO remove
+            generatorId = "dummy";
         }
 
-        return Observable.just(generatorId);
+        Observable<DetailsEvent> init = Observable.just(new DetailsEvent.Initialize(generatorId));
+
+        Observable<DetailsEvent> fabClicks = RxView.clicks(mFloatingActionButton)
+                .map(ignored -> new DetailsEvent.Generate(mGeneratorId, 10));
+
+        return Observable.merge(init, fabClicks);
     }
 
     class GeneratorResultViewHolder extends RecyclerView.ViewHolder {

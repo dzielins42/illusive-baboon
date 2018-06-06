@@ -1,11 +1,6 @@
 package pl.dzielins42.illusivebaboon.android.view.details;
 
-import android.util.Log;
-
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -17,27 +12,38 @@ import pl.dzielins42.illusivebaboon.android.data.interactor.GeneratorResultsInte
 public class GeneratorDetailsPresenter
         extends MviBasePresenter<GeneratorDetailsView, GeneratorDetailsViewModel> {
 
+    private static final GeneratorDetailsViewModel INITIAL_VIEW_MODEL =
+            GeneratorDetailsViewModel.create();
+
     @Inject
     GeneratorResultsInteractor mGeneratorResultsInteractor;
 
     @Inject
     public GeneratorDetailsPresenter() {
-        super(GeneratorDetailsViewModel.create());
+        super(INITIAL_VIEW_MODEL);
     }
 
     @Override
     protected void bindIntents() {
-        Observable<Integer> load = intent(GeneratorDetailsView::loadIntents).map(s -> {
-            return 1;
-        });
-
         // Intents generate Patches which are applied to previous State producing new State
 
-        Observable<GeneratorDetailsViewModel> intents = mGeneratorResultsInteractor
-                .generate("", 10)
-                .map(results -> GeneratorDetailsViewModel.create().builder().setResults(results).build())
-                .toObservable();
+        subscribeViewState(
+                intent(GeneratorDetailsView::eventsObservable)
+                        .publish(event -> process(event))
+                        .scan(INITIAL_VIEW_MODEL, (model, patch) -> patch.apply(model)),
+                GeneratorDetailsView::render
+        );
+    }
 
-        subscribeViewState(intents, GeneratorDetailsView::render);
+    private Observable<DetailsViewPatch> process(Observable<DetailsEvent> shared) {
+        Observable<DetailsViewPatch> init = shared.ofType(DetailsEvent.Initialize.class)
+                .map(event -> new DetailsViewPatch.AddMetaData(event.getGeneratorId()));
+
+        Observable<DetailsViewPatch> generate = shared.ofType(DetailsEvent.Generate.class)
+                .flatMap(event -> mGeneratorResultsInteractor.generate(event.getGeneratorId(), event.getCount()).toObservable()
+                )
+                .map(results -> new DetailsViewPatch.SetResults(results));
+
+        return Observable.merge(init, generate);
     }
 }

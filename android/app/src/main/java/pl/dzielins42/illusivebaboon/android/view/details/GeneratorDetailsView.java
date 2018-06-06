@@ -8,5 +8,5 @@ public interface GeneratorDetailsView extends MvpView {
 
     void render(GeneratorDetailsViewModel viewModel);
 
-    Observable<String> loadIntents();
+    Observable<DetailsEvent> eventsObservable();
 }
