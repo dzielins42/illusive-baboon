@@ -6,9 +6,11 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-public abstract class ArrayListAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+public abstract class ArrayListAdapter<T, VH extends RecyclerView.ViewHolder>
+        extends RecyclerView.Adapter<VH> {
 
     private final ArrayList<T> mItems = new ArrayList<T>();
 
@@ -34,6 +36,34 @@ public abstract class ArrayListAdapter<T, VH extends RecyclerView.ViewHolder> ex
         mItems.clear();
         mItems.addAll(itemsAsList);
         diffResult.dispatchUpdatesTo(this);
+    }
+
+    public void clearItems() {
+        setItems(Collections.emptyList());
+    }
+
+    public void addItem(T item) {
+        final List<T> copy = new ArrayList<>(mItems);
+        copy.add(item);
+        setItems(copy);
+    }
+
+    public void addItems(Collection<? extends T> items) {
+        final List<T> copy = new ArrayList<>(mItems);
+        copy.addAll(items);
+        setItems(copy);
+    }
+
+    public void removeItem(T item) {
+        final List<T> copy = new ArrayList<>(mItems);
+        copy.remove(item);
+        setItems(copy);
+    }
+
+    public void removeItemAt(int position) {
+        final List<T> copy = new ArrayList<>(mItems);
+        copy.remove(position);
+        setItems(copy);
     }
 
     protected T getItemAt(int position) {

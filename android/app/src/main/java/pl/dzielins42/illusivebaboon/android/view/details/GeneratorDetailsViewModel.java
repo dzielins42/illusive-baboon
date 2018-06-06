@@ -3,6 +3,7 @@ package pl.dzielins42.illusivebaboon.android.view.details;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,6 +64,13 @@ public class GeneratorDetailsViewModel {
         @NonNull
         public Builder setResults(List<String> results) {
             mResults = results;
+            return this;
+        }
+
+        @NonNull
+        public Builder addResults(List<String> results) {
+            mResults = new ArrayList<>(mPreviousModel.mResults);
+            mResults.addAll(results);
             return this;
         }
 

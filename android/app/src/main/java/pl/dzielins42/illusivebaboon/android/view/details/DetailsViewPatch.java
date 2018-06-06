@@ -36,7 +36,7 @@ public interface DetailsViewPatch {
         @Override
         public GeneratorDetailsViewModel apply(GeneratorDetailsViewModel viewModel) {
             return viewModel.builder()
-                    .setResults(mResults)
+                    .addResults(mResults)
                     .build();
         }
     }
