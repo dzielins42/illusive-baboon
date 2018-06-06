@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -66,16 +65,11 @@ public class GeneratorDetailsActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        mResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mResultsRecyclerView.setLayoutManager(new LinearLayoutManager(
+                this,
+                LinearLayoutManager.VERTICAL,
+                false
+        ));
         mAdapter = new GeneratorResultsAdapter();
         mResultsRecyclerView.setAdapter(mAdapter);
     }
@@ -125,8 +119,7 @@ public class GeneratorDetailsActivity
     @Override
     public void render(GeneratorDetailsViewModel viewModel) {
         mGeneratorId = viewModel.getGeneratorId();
-        mAdapter.clear();
-        mAdapter.addAll(viewModel.getResults());
+        mAdapter.setItems(viewModel.getResults());
     }
 
     @Override
@@ -166,9 +159,12 @@ public class GeneratorDetailsActivity
 
         @NonNull
         @Override
-        public GeneratorResultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public GeneratorResultViewHolder onCreateViewHolder(
+                @NonNull ViewGroup parent,
+                int viewType
+        ) {
             final View view = LayoutInflater.from(mContext).inflate(
-                    android.R.layout.simple_list_item_1, parent, false
+                    R.layout.view_generator_result_item, parent, false
             );
             return new GeneratorResultViewHolder(view);
         }
@@ -176,6 +172,16 @@ public class GeneratorDetailsActivity
         @Override
         public void onBindViewHolder(@NonNull GeneratorResultViewHolder holder, int position) {
             holder.bind(getItemAt(position));
+        }
+
+        @Override
+        protected boolean areItemsTheSame(String oldItem, String newItem) {
+            return TextUtils.equals(oldItem, newItem);
+        }
+
+        @Override
+        protected boolean areContentsTheSame(String oldItem, String newItem) {
+            return TextUtils.equals(oldItem, newItem);
         }
     }
 }
