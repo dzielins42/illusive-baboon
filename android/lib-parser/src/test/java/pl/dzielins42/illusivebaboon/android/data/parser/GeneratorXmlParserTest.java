@@ -1,4 +1,4 @@
-package pl.dzielins42.illusivebaboon.android.data;
+package pl.dzielins42.illusivebaboon.android.data.parser;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import pl.dzielins42.illusivebaboon.android.BuildConfig;
+import pl.dzielins42.illusivebaboon.android.data.NameGeneratorWrapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -40,17 +41,19 @@ public class GeneratorXmlParserTest {
 
     @Test
     public void parse_general() throws Exception {
-        String data = "<?xml version=\"1.0\"?>\n" +
-                "<probability-gen id=\"common.color.blue\">\n" +
-                "  <string-item>blue</string-item>\n" +
-                "</probability-gen>\n" +
-                "<probability-gen id=\"common.color\">\n" +
-                "  <string-item>black</string-item>\n" +
-                "  <string-item>white</string-item>\n" +
-                "  <string-item>red</string-item>\n" +
-                "  <string-item>green</string-item>\n" +
-                "  <ref-item id=\"common.color.blue\"/>\n" +
-                "</probability-gen>\n";
+        String data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<data>\n" +
+                "   <probability-gen id=\"common.color.blue\">\n" +
+                "      <string-item>blue</string-item>\n" +
+                "   </probability-gen>\n" +
+                "   <probability-gen id=\"common.color\">\n" +
+                "      <string-item>black</string-item>\n" +
+                "      <string-item>white</string-item>\n" +
+                "      <string-item>red</string-item>\n" +
+                "      <string-item>green</string-item>\n" +
+                "      <ref-item id=\"common.color.blue\" />\n" +
+                "   </probability-gen>\n" +
+                "</data>";
         InputStream stream = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
         mXmlPullParser.setInput(stream, null);
         List<NameGeneratorWrapper> result = mGeneratorXmlParser.parse(mXmlPullParser);

@@ -1,4 +1,4 @@
-package pl.dzielins42.illusivebaboon.android.data;
+package pl.dzielins42.illusivebaboon.android.data.parser;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -16,21 +16,23 @@ import pl.dzielins42.dmtools.generator.name.NameGeneratorItem;
 import pl.dzielins42.dmtools.generator.name.ProbabilityNameGenerator;
 import pl.dzielins42.dmtools.generator.name.ReferenceNameGeneratorItem;
 import pl.dzielins42.dmtools.generator.name.StringNameGeneratorItem;
+import pl.dzielins42.illusivebaboon.android.data.NameGeneratorWrapper;
 
 public class GeneratorXmlParser {
 
     private static final String EMPTY_GENERATOR_ID = "";
 
+    private static final String ROOT_TAG = "data";
     private static final String PROBABILITY_GENERATOR_TAG = "probability-gen";
-
     private static final String STRING_ITEM_TAG = "string-item";
     private static final String REFERENCE_ITEM_TAG = "ref-item";
 
     private static final String PROBABILITY_ATTRIBUTE = "probability";
     private static final String ID_ATTRIBUTE = "id";
 
-    public List<NameGeneratorWrapper> parse(XmlPullParser parser)
-            throws XmlPullParserException, IOException {
+    public List<NameGeneratorWrapper> parse(
+            XmlPullParser parser
+    ) throws XmlPullParserException, IOException {
         final List<NameGeneratorWrapper> list = new LinkedList<>();
         final ParsingContext parsingContext = new ParsingContext();
         int eventType = parser.getEventType();
@@ -53,8 +55,11 @@ public class GeneratorXmlParser {
             XmlPullParser parser,
             ParsingContext parsingContext
     ) throws XmlPullParserException, IOException {
+        // Sanity test
         if (!PROBABILITY_GENERATOR_TAG.equals(parser.getName())) {
-            throw new IllegalStateException();
+            throw new IllegalStateException(
+                    parser.getName() + " is not a " + PROBABILITY_GENERATOR_TAG
+            );
         }
 
         List<NameGeneratorItem> items = new ArrayList<>();
@@ -62,26 +67,40 @@ public class GeneratorXmlParser {
 
         String id = getStringAttribute(parser, null, ID_ATTRIBUTE);
 
+        // Items have to be parsed here because they have additional properties used only in
+        // ProbabilityNameGenerator
         int eventType = parser.getEventType();
         while (eventType != XmlPullParser.END_TAG) {
+            if (XmlPullParser.START_TAG != eventType) {
+                eventType = parser.next();
+                continue;
+            }
+
             final String name = parser.getName();
-            switch (eventType) {
-                case XmlPullParser.START_TAG:
-                    if (STRING_ITEM_TAG.equals(name)) {
-                        probabilities.add(getDoubleAttribute(parser, null, PROBABILITY_ATTRIBUTE));
-                        new StringNameGeneratorItem(readText(parser));
-                    } else if (REFERENCE_ITEM_TAG.equals(name)) {
-                        final String refId = getStringAttribute(parser, null, ID_ATTRIBUTE);
-                        if (refId == null || !parsingContext.generatorsMap.containsKey(refId)) {
-                            throw new NoSuchElementException(
-                                    "Cannot reference " + String.valueOf(refId)
-                            );
-                        }
-                        probabilities.add(getDoubleAttribute(parser, null, PROBABILITY_ATTRIBUTE));
-                        items.add(new ReferenceNameGeneratorItem(
-                                parsingContext.generatorsMap.get(refId)
-                        ));
+            switch (name) {
+                case STRING_ITEM_TAG:
+                    probabilities.add(getDoubleAttribute(
+                            parser,
+                            null,
+                            PROBABILITY_ATTRIBUTE
+                    ));
+                    items.add(new StringNameGeneratorItem(readText(parser)));
+                    break;
+                case REFERENCE_ITEM_TAG:
+                    final String refId = getStringAttribute(parser, null, ID_ATTRIBUTE);
+                    if (refId == null || !parsingContext.generatorsMap.containsKey(refId)) {
+                        throw new NoSuchElementException(
+                                "Cannot reference " + String.valueOf(refId)
+                        );
                     }
+                    probabilities.add(getDoubleAttribute(
+                            parser,
+                            null,
+                            PROBABILITY_ATTRIBUTE
+                    ));
+                    items.add(new ReferenceNameGeneratorItem(
+                            parsingContext.generatorsMap.get(refId)
+                    ));
                     break;
             }
             eventType = parser.next();
@@ -99,7 +118,7 @@ public class GeneratorXmlParser {
             }
         }
         if (containsNulls == containsNonNulls) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Inconsistent probabilities");
         }
 
         ProbabilityNameGenerator generator;
