@@ -14,8 +14,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import pl.dzielins42.illusivebaboon.android.BuildConfig;
 import pl.dzielins42.illusivebaboon.android.data.NameGeneratorWrapper;
+import pl.dzielins42.illusivebaboon.android.lib.parser.BuildConfig;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
