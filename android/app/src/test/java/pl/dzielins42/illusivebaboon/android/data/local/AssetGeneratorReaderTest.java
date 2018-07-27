@@ -31,7 +31,7 @@ public class AssetGeneratorReaderTest {
 
     @Test
     public void read_all() throws Exception {
-        List<NameGeneratorWrapper> result = mReader.read("").toList().blockingGet();
+        List<NameGeneratorWrapper> result = mReader.read().toList().blockingGet();
     }
 
     @Test

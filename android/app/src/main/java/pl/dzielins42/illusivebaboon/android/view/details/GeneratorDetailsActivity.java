@@ -34,6 +34,8 @@ public class GeneratorDetailsActivity
         extends MviActivity<GeneratorDetailsView, GeneratorDetailsPresenter>
         implements GeneratorDetailsView {
 
+    private static final String TAG = GeneratorDetailsActivity.class.getSimpleName();
+
     public static final String KEY_GENERATOR_ID = "GENERATOR_ID";
 
     @Inject
@@ -101,11 +103,11 @@ public class GeneratorDetailsActivity
         super.onResume();
 
         Log.d(
-                "GeneratorDetailsActivity",
+                TAG,
                 "onResume: " + (mAppHelloService != null ? mAppHelloService.hello() : "AppHelloService is null")
         );
         Log.d(
-                "GeneratorDetailsActivity",
+                TAG,
                 "onResume: " + (mActivityHelloService != null ? mActivityHelloService.hello() : "ActivityHelloService is null")
         );
     }
@@ -128,7 +130,8 @@ public class GeneratorDetailsActivity
         if (TextUtils.isEmpty(generatorId)) {
             generatorId = "";
             // TODO remove
-            generatorId = "dummy";
+            generatorId = "name.human.male";
+            // TODO make screen with error
         }
 
         Observable<DetailsEvent> init = Observable.just(new DetailsEvent.Initialize(generatorId));

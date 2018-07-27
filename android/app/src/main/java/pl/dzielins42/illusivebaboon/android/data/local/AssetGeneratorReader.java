@@ -31,7 +31,11 @@ public class AssetGeneratorReader {
         mContext = context;
     }
 
-    Flowable<NameGeneratorWrapper> read(final String basePath) {
+    public Flowable<NameGeneratorWrapper> read() {
+        return read("generator");
+    }
+
+    public Flowable<NameGeneratorWrapper> read(final String basePath) {
         return Flowable.create(
                 emitter -> readToEmitter(basePath, emitter),
                 BackpressureStrategy.BUFFER
@@ -42,14 +46,15 @@ public class AssetGeneratorReader {
             final String basePath,
             FlowableEmitter<NameGeneratorWrapper> emitter
     ) throws Exception {
-        final AssetManager assetManager = mContext.getAssets();
+        AssetManager assetManager = mContext.getAssets();
 
         List<String> filesToRead = scan(assetManager, basePath);
 
         GeneratorXmlParser generatorXmlParser = new GeneratorXmlParser();
         for (String file : filesToRead) {
-            InputStream is = assetManager.open(file);
+            InputStream is = null;
             try {
+                is = assetManager.open(file);
                 final XmlPullParser xmlPullParser =
                         XmlPullParserFactory.newInstance().newPullParser();
                 xmlPullParser.setInput(is, null);
@@ -60,11 +65,14 @@ public class AssetGeneratorReader {
                     }
                 }
             } finally {
-                is.close();
+                if (is != null) {
+                    is.close();
+                }
             }
         }
 
-        assetManager.close();
+        // Was causing errors
+        //assetManager.close();
         emitter.onComplete();
     }
 

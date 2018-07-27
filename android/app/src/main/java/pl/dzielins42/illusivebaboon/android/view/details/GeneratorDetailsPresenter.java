@@ -1,5 +1,7 @@
 package pl.dzielins42.illusivebaboon.android.view.details;
 
+import android.util.Log;
+
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter;
 
 import javax.inject.Inject;
@@ -11,6 +13,8 @@ import pl.dzielins42.illusivebaboon.android.data.interactor.GeneratorResultsInte
 @Singleton
 public class GeneratorDetailsPresenter
         extends MviBasePresenter<GeneratorDetailsView, GeneratorDetailsViewModel> {
+
+    private static final String TAG = GeneratorDetailsPresenter.class.getSimpleName();
 
     private static final GeneratorDetailsViewModel INITIAL_VIEW_MODEL =
             GeneratorDetailsViewModel.create();
@@ -40,8 +44,8 @@ public class GeneratorDetailsPresenter
                 .map(event -> new DetailsViewPatch.AddMetaData(event.getGeneratorId()));
 
         Observable<DetailsViewPatch> generate = shared.ofType(DetailsEvent.Generate.class)
-                .flatMap(event -> mGeneratorResultsInteractor.generate(event.getGeneratorId(), event.getCount()).toObservable()
-                )
+                .flatMap(event -> mGeneratorResultsInteractor.generate(event.getGeneratorId(), event.getCount()).toObservable())
+                .doOnError(throwable -> Log.e(TAG, "Error: ", throwable))
                 .map(results -> new DetailsViewPatch.SetResults(results));
 
         return Observable.merge(init, generate);
