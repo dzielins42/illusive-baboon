@@ -54,6 +54,8 @@ dependencies {
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.0'
     annotationProcessor 'org.projectlombok:lombok:1.18.0'
+    // Guava
+    compile 'com.google.guava:guava:25.1-android'
 
     implementation 'com.github.dzielins42:spongy-elephant:-SNAPSHOT'
 

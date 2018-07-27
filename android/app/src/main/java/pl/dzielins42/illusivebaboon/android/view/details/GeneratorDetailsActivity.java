@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.common.collect.Lists;
 import com.hannesdorfmann.mosby3.mvi.MviActivity;
 import com.jakewharton.rxbinding2.view.RxView;
 
@@ -121,7 +122,7 @@ public class GeneratorDetailsActivity
     @Override
     public void render(GeneratorDetailsViewModel viewModel) {
         mGeneratorId = viewModel.getGeneratorId();
-        mAdapter.setItems(viewModel.getResults());
+        mAdapter.setItems(Lists.reverse(viewModel.getResults()));
     }
 
     @Override
