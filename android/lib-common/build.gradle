@@ -33,6 +33,9 @@ dependencies {
     testImplementation "junit:junit:${junitVersion}"
     androidTestImplementation "com.android.support.test:runner:${testrunnerVersion}"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:${espressoVersion}"
+    // Lombok
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     implementation 'com.github.dzielins42:spongy-elephant:-SNAPSHOT'
 }

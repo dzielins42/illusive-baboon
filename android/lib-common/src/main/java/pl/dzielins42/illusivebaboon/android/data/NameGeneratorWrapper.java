@@ -4,26 +4,25 @@ import android.support.annotation.NonNull;
 
 import java.util.Collection;
 
+import lombok.Builder;
+import lombok.Value;
+import lombok.experimental.Accessors;
 import pl.dzielins42.dmtools.generator.name.NameGenerator;
 import pl.dzielins42.dmtools.generator.name.NameGeneratorOptions;
 
+@Value
+@Accessors(prefix = "m")
+@Builder
 public class NameGeneratorWrapper implements NameGenerator {
 
-    private final String mId;
-    private final NameGenerator mGenerator;
-
-    public NameGeneratorWrapper(
-            @NonNull String id,
-            @NonNull NameGenerator generator
-    ) {
-        mId = id;
-        mGenerator = generator;
-    }
-
     @NonNull
-    public String getId() {
-        return mId;
-    }
+    private final String mId;
+    @NonNull
+    private final String mName;
+    @NonNull
+    private final String mDescription;
+    @NonNull
+    private final NameGenerator mGenerator;
 
     @Override
     public String generate(NameGeneratorOptions options) {

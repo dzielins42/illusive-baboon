@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <data>
-   <probability-gen id="name.human.male">
+   <probability-gen id="name.human.male" name="test" description="">
       <string-item>Aaron</string-item>
       <string-item>Abdiel</string-item>
       <string-item>Abdullah</string-item>

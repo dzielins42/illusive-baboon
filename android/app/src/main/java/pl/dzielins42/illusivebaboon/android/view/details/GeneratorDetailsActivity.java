@@ -123,6 +123,7 @@ public class GeneratorDetailsActivity
     public void render(GeneratorDetailsViewModel viewModel) {
         mGeneratorId = viewModel.getGeneratorId();
         mAdapter.setItems(Lists.reverse(viewModel.getResults()));
+        setTitle(viewModel.getGeneratorName());
     }
 
     @Override

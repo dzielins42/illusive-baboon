@@ -29,6 +29,8 @@ public class GeneratorXmlParser {
 
     private static final String PROBABILITY_ATTRIBUTE = "probability";
     private static final String ID_ATTRIBUTE = "id";
+    private static final String NAME_ATTRIBUTE = "name";
+    private static final String DESCRIPTION_ATTRIBUTE = "description";
 
     public List<NameGeneratorWrapper> parse(
             XmlPullParser parser
@@ -66,6 +68,8 @@ public class GeneratorXmlParser {
         List<Double> probabilities = new ArrayList<>();
 
         String id = getStringAttribute(parser, null, ID_ATTRIBUTE);
+        String name = getStringAttribute(parser, null, NAME_ATTRIBUTE);
+        String description = getStringAttribute(parser, null, DESCRIPTION_ATTRIBUTE);
 
         // Items have to be parsed here because they have additional properties used only in
         // ProbabilityNameGenerator
@@ -76,8 +80,8 @@ public class GeneratorXmlParser {
                 continue;
             }
 
-            final String name = parser.getName();
-            switch (name) {
+            final String tagName = parser.getName();
+            switch (tagName) {
                 case STRING_ITEM_TAG:
                     probabilities.add(getDoubleAttribute(
                             parser,
@@ -139,7 +143,12 @@ public class GeneratorXmlParser {
             id = EMPTY_GENERATOR_ID;
         }
 
-        return new NameGeneratorWrapper(id, generator);
+        return NameGeneratorWrapper.builder()
+                .id(id)
+                .name(name)
+                .description(description)
+                .generator(generator)
+                .build();
     }
 
     Double getDoubleAttribute(XmlPullParser parser, String namespace, String name) {

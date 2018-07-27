@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Observable;
+import pl.dzielins42.illusivebaboon.android.data.interactor.GeneratorRepositoryInteractor;
 import pl.dzielins42.illusivebaboon.android.data.interactor.GeneratorResultsInteractor;
 
 @Singleton
@@ -21,6 +22,8 @@ public class GeneratorDetailsPresenter
 
     @Inject
     GeneratorResultsInteractor mGeneratorResultsInteractor;
+    @Inject
+    GeneratorRepositoryInteractor mGeneratorRepositoryInteractor;
 
     @Inject
     public GeneratorDetailsPresenter() {
@@ -34,6 +37,7 @@ public class GeneratorDetailsPresenter
         subscribeViewState(
                 intent(GeneratorDetailsView::eventsObservable)
                         .publish(event -> process(event))
+                        .doOnError(throwable -> Log.e(TAG, "Error: ", throwable))
                         .scan(INITIAL_VIEW_MODEL, (model, patch) -> patch.apply(model)),
                 GeneratorDetailsView::render
         );
@@ -41,11 +45,15 @@ public class GeneratorDetailsPresenter
 
     private Observable<DetailsViewPatch> process(Observable<DetailsEvent> shared) {
         Observable<DetailsViewPatch> init = shared.ofType(DetailsEvent.Initialize.class)
-                .map(event -> new DetailsViewPatch.AddMetaData(event.getGeneratorId()));
+                .flatMap(event -> mGeneratorRepositoryInteractor.get(event.getGeneratorId()).toObservable())
+                .map(results -> new DetailsViewPatch.AddMetaData(
+                        results.getId(), results.getName(), results.getDescription()
+                     )
+                );
+                //.map(event -> new DetailsViewPatch.AddMetaData(event.getGeneratorId()));
 
         Observable<DetailsViewPatch> generate = shared.ofType(DetailsEvent.Generate.class)
                 .flatMap(event -> mGeneratorResultsInteractor.generate(event.getGeneratorId(), event.getCount()).toObservable())
-                .doOnError(throwable -> Log.e(TAG, "Error: ", throwable))
                 .map(results -> new DetailsViewPatch.SetResults(results));
 
         return Observable.merge(init, generate);

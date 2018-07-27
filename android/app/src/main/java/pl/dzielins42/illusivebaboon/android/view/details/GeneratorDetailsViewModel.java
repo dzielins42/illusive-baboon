@@ -17,4 +17,6 @@ public class GeneratorDetailsViewModel {
     @Singular
     private List<String> mResults;
     private String mGeneratorId;
+    private String mGeneratorName;
+    private String mGeneratorDescription;
 }
