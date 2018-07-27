@@ -18,8 +18,9 @@ public interface DetailsViewPatch {
 
         @Override
         public GeneratorDetailsViewModel apply(GeneratorDetailsViewModel viewModel) {
-            return viewModel.builder()
-                    .setGeneratorId(mGeneratorId)
+            return viewModel.toBuilder()
+                    .generatorId(mGeneratorId)
+                    .clearResults()
                     .build();
         }
     }
@@ -35,8 +36,8 @@ public interface DetailsViewPatch {
 
         @Override
         public GeneratorDetailsViewModel apply(GeneratorDetailsViewModel viewModel) {
-            return viewModel.builder()
-                    .addResults(mResults)
+            return viewModel.toBuilder()
+                    .results(mResults)
                     .build();
         }
     }

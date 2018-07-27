@@ -17,7 +17,7 @@ public class GeneratorDetailsPresenter
     private static final String TAG = GeneratorDetailsPresenter.class.getSimpleName();
 
     private static final GeneratorDetailsViewModel INITIAL_VIEW_MODEL =
-            GeneratorDetailsViewModel.create();
+            GeneratorDetailsViewModel.builder().build();
 
     @Inject
     GeneratorResultsInteractor mGeneratorResultsInteractor;
