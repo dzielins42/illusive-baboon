@@ -26,3 +26,23 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    compileSdk = 27
+
+    appcompatVersion = '27.1.1'
+    constraintlayoutVersion = '1.1.2'
+    junitVersion = '4.12'
+    espressoVersion = '3.0.2'
+    testrunnerVersion = '1.0.2'
+    butterknifeVersion = '8.8.1'
+    daggerVersion = '2.16'
+    daggerAndroidVersion = '2.11'
+    guavaVersion = '25.1-android'
+    mosbyVersion = '3.1.0'
+    lombokVersion = '1.18.0'
+    robolectricVersion = '3.8'
+    rxjavaVersion = '2.1.16'
+    rxbindingVersion = '2.1.1'
+    rxandroidVersion = '2.0.2'
+}
