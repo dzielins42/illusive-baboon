@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
 import io.reactivex.Observable;
 import pl.dzielins42.illusivebaboon.android.R;
-import pl.dzielins42.illusivebaboon.android.data.GeneratorMetaData;
+import pl.dzielins42.illusivebaboon.android.data.HierarchyData;
 import pl.dzielins42.illusivebaboon.android.data.local.FragmentHelloService;
 import pl.dzielins42.illusivebaboon.android.ui.ArrayListAdapter;
 
@@ -112,12 +112,12 @@ public class GeneratorListActivityFragment
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(GeneratorMetaData item) {
+        public void bind(HierarchyData item) {
             mTextView.setText(item.getName());
         }
     }
 
-    class GeneratorListAdapter extends ArrayListAdapter<GeneratorMetaData, GeneratorListViewHolder> {
+    class GeneratorListAdapter extends ArrayListAdapter<HierarchyData, GeneratorListViewHolder> {
 
         @NonNull
         @Override
@@ -137,12 +137,12 @@ public class GeneratorListActivityFragment
         }
 
         @Override
-        protected boolean areItemsTheSame(GeneratorMetaData oldItem, GeneratorMetaData newItem) {
+        protected boolean areItemsTheSame(HierarchyData oldItem, HierarchyData newItem) {
             return oldItem.equals(newItem);
         }
 
         @Override
-        protected boolean areContentsTheSame(GeneratorMetaData oldItem, GeneratorMetaData newItem) {
+        protected boolean areContentsTheSame(HierarchyData oldItem, HierarchyData newItem) {
             return oldItem.equals(newItem);
         }
     }

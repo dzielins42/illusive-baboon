@@ -1,5 +1,6 @@
 package pl.dzielins42.illusivebaboon.android.data.interactor;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -16,18 +17,18 @@ import pl.dzielins42.illusivebaboon.android.data.local.repository.GeneratorRepos
 public class GeneratorRepositoryInteractor {
     private static final String TAG = GeneratorRepositoryInteractor.class.getSimpleName();
 
+    private final Context mContext;
     private final GeneratorRepository mGeneratorRepository;
-    private final AssetGeneratorReader mAssetGeneratorReader;
 
     private boolean mAssetsLoaded = false;
 
     @Inject
     public GeneratorRepositoryInteractor(
-            GeneratorRepository generatorRepository,
-            AssetGeneratorReader assetGeneratorReader
+            Context context,
+            GeneratorRepository generatorRepository
     ) {
+        mContext = context;
         mGeneratorRepository = generatorRepository;
-        mAssetGeneratorReader = assetGeneratorReader;
     }
 
     public Maybe<NameGeneratorWrapper> get(@NonNull String id) {
@@ -51,7 +52,8 @@ public class GeneratorRepositoryInteractor {
     }
 
     Flowable<NameGeneratorWrapper> loadFromAssets() {
-        return mAssetGeneratorReader.read()
+        final AssetGeneratorReader assetGeneratorReader = new AssetGeneratorReader(mContext);
+        return assetGeneratorReader.read()
                 .doOnNext(generator -> mGeneratorRepository.save(generator));
     }
 }

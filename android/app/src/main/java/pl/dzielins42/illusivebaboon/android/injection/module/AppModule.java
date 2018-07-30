@@ -3,6 +3,9 @@ package pl.dzielins42.illusivebaboon.android.injection.module;
 import android.app.Application;
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -36,5 +39,11 @@ public class AppModule {
     @Singleton
     FragmentHelloService provideFragmentHelloService() {
         return new FragmentHelloService();
+    }
+
+    @Provides
+    @Singleton
+    Gson provideGson() {
+        return new GsonBuilder().setPrettyPrinting().create();
     }
 }

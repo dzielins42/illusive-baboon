@@ -1,24 +1,15 @@
 package pl.dzielins42.illusivebaboon.android.view.details;
 
+import lombok.Builder;
+import lombok.Value;
+import lombok.experimental.Accessors;
+
 public interface DetailsEvent {
 
+    @Value
+    @Accessors(prefix = "m")
     final class Initialize implements DetailsEvent {
-        private final String mGeneratorId;
-
-        public Initialize(String generatorId) {
-            mGeneratorId = generatorId;
-        }
-
-        public String getGeneratorId() {
-            return mGeneratorId;
-        }
-
-        @Override
-        public String toString() {
-            return "Initialize{" +
-                    "generatorId='" + mGeneratorId + "'" +
-                    "}";
-        }
+        private final String mPath;
     }
 
     final class Generate implements DetailsEvent {

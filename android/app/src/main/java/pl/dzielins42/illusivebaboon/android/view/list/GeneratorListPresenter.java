@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Observable;
-import pl.dzielins42.illusivebaboon.android.data.GeneratorMetaData;
+import pl.dzielins42.illusivebaboon.android.data.interactor.GeneratorHierarchyRepositoryInteractor;
 
 @Singleton
 public class GeneratorListPresenter
@@ -21,6 +21,9 @@ public class GeneratorListPresenter
 
     private static final GeneratorListViewModel INITIAL_VIEW_MODEL =
             GeneratorListViewModel.builder().build();
+
+    @Inject
+    GeneratorHierarchyRepositoryInteractor mGeneratorHierarchyRepositoryInteractor;
 
     @Inject
     public GeneratorListPresenter() {
@@ -42,28 +45,9 @@ public class GeneratorListPresenter
 
     private Observable<ListViewPatch> process(Observable<ListEvent> shared) {
         Observable<ListViewPatch> init = shared.ofType(ListEvent.Initialize.class)
-                //.flatMap(event -> mGeneratorRepositoryInteractor.get(event.getGeneratorId()).toObservable())
-                .map(results -> new ListViewPatch.SetItems(dummyData()));
+                .flatMap(event -> mGeneratorHierarchyRepositoryInteractor.list(null).toObservable())
+                .map(results -> new ListViewPatch.SetItems(results));
 
         return init;
-    }
-
-    private List<GeneratorMetaData> dummyData(){
-        List<GeneratorMetaData> data = new ArrayList<>();
-
-        data.add(GeneratorMetaData.builder().id("name.human.male")
-                         .name("G1")
-                         .build()
-        );
-        data.add(GeneratorMetaData.builder().id("name.human.male")
-                         .name("G2")
-                         .build()
-        );
-        data.add(GeneratorMetaData.builder().id("name.human.male")
-                         .name("G3")
-                         .build()
-        );
-
-        return data;
     }
 }

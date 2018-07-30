@@ -68,8 +68,6 @@ public class GeneratorXmlParser {
         List<Double> probabilities = new ArrayList<>();
 
         String id = getStringAttribute(parser, null, ID_ATTRIBUTE);
-        String name = getStringAttribute(parser, null, NAME_ATTRIBUTE);
-        String description = getStringAttribute(parser, null, DESCRIPTION_ATTRIBUTE);
 
         // Items have to be parsed here because they have additional properties used only in
         // ProbabilityNameGenerator
@@ -145,8 +143,6 @@ public class GeneratorXmlParser {
 
         return NameGeneratorWrapper.builder()
                 .id(id)
-                .name(name)
-                .description(description)
                 .generator(generator)
                 .build();
     }

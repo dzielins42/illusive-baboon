@@ -18,10 +18,6 @@ public class NameGeneratorWrapper implements NameGenerator {
     @NonNull
     private final String mId;
     @NonNull
-    private final String mName;
-    @NonNull
-    private final String mDescription;
-    @NonNull
     private final NameGenerator mGenerator;
 
     @Override

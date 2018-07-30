@@ -20,7 +20,6 @@ public interface DetailsViewPatch {
         private final String mGeneratorId;
         @NonNull
         private final String mGeneratorName;
-        @NonNull
         private final String mGeneratorDescription;
 
         @Override

@@ -28,8 +28,8 @@ public class GeneratorRepositoryInteractorTest {
     public void setUp() throws Exception {
         mRepository = new GeneratorRepository();
         mInteractor = new GeneratorRepositoryInteractor(
-                mRepository,
-                new AssetGeneratorReader(RuntimeEnvironment.application)
+                RuntimeEnvironment.application,
+                mRepository
         );
     }
 

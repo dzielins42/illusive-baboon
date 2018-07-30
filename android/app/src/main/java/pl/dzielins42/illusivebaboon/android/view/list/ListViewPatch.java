@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.Value;
 import lombok.experimental.Accessors;
-import pl.dzielins42.illusivebaboon.android.data.GeneratorMetaData;
+import pl.dzielins42.illusivebaboon.android.data.HierarchyData;
 
 public interface ListViewPatch {
 
@@ -14,7 +14,7 @@ public interface ListViewPatch {
     @Accessors(prefix = "m")
     final class SetItems implements ListViewPatch {
 
-        private final List<GeneratorMetaData> mItems;
+        private final List<HierarchyData> mItems;
 
         @Override
         public GeneratorListViewModel apply(GeneratorListViewModel viewModel) {

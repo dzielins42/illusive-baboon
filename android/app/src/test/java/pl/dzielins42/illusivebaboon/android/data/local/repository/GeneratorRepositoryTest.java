@@ -80,8 +80,6 @@ public class GeneratorRepositoryTest {
     private NameGeneratorWrapper createDummyDataItem() {
         return NameGeneratorWrapper.builder()
                 .id("test")
-                .name("name")
-                .description("description")
                 .generator(new NameGenerator() {
                     @Override
                     public String generate(NameGeneratorOptions options) {

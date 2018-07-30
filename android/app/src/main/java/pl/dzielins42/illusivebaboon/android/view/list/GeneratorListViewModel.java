@@ -7,7 +7,7 @@ import lombok.NonNull;
 import lombok.Singular;
 import lombok.Value;
 import lombok.experimental.Accessors;
-import pl.dzielins42.illusivebaboon.android.data.GeneratorMetaData;
+import pl.dzielins42.illusivebaboon.android.data.HierarchyData;
 
 @Value
 @Accessors(prefix = "m")
@@ -15,5 +15,5 @@ import pl.dzielins42.illusivebaboon.android.data.GeneratorMetaData;
 public class GeneratorListViewModel {
     @NonNull
     @Singular
-    private final List<GeneratorMetaData> mItems;
+    private final List<HierarchyData> mItems;
 }

@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Observable;
+import pl.dzielins42.illusivebaboon.android.data.interactor.GeneratorHierarchyRepositoryInteractor;
 import pl.dzielins42.illusivebaboon.android.data.interactor.GeneratorRepositoryInteractor;
 import pl.dzielins42.illusivebaboon.android.data.interactor.GeneratorResultsInteractor;
 
@@ -24,6 +25,8 @@ public class GeneratorDetailsPresenter
     GeneratorResultsInteractor mGeneratorResultsInteractor;
     @Inject
     GeneratorRepositoryInteractor mGeneratorRepositoryInteractor;
+    @Inject
+    GeneratorHierarchyRepositoryInteractor mGeneratorHierarchyRepositoryInteractor;
 
     @Inject
     public GeneratorDetailsPresenter() {
@@ -45,9 +48,11 @@ public class GeneratorDetailsPresenter
 
     private Observable<DetailsViewPatch> process(Observable<DetailsEvent> shared) {
         Observable<DetailsViewPatch> init = shared.ofType(DetailsEvent.Initialize.class)
-                .flatMap(event -> mGeneratorRepositoryInteractor.get(event.getGeneratorId()).toObservable())
+                .flatMap(event -> mGeneratorHierarchyRepositoryInteractor.get(event.getPath()).toObservable())
                 .map(results -> new DetailsViewPatch.AddMetaData(
-                        results.getId(), results.getName(), results.getDescription()
+                             results.getId(),
+                             results.getName(),
+                             results.getDescription()
                      )
                 );
                 //.map(event -> new DetailsViewPatch.AddMetaData(event.getGeneratorId()));
