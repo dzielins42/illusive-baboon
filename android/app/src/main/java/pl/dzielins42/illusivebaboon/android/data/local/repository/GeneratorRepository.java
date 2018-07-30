@@ -1,6 +1,7 @@
 package pl.dzielins42.illusivebaboon.android.data.local.repository;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ public class GeneratorRepository {
     public GeneratorRepository() {
     }
 
+    @Nullable
     public NameGeneratorWrapper get(@NonNull String id) {
         return mData.get(id);
     }
