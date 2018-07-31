@@ -1,5 +1,6 @@
 package pl.dzielins42.illusivebaboon.android.view.list;
 
+import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
@@ -7,6 +8,8 @@ public interface ListEvent {
 
     @Value
     @Accessors(prefix = "m")
-    final class Initialize implements ListEvent {
+    @Builder
+    final class Load implements ListEvent {
+        private final String mPath;
     }
 }

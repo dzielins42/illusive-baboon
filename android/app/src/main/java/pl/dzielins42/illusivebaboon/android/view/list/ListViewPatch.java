@@ -14,11 +14,13 @@ public interface ListViewPatch {
     @Accessors(prefix = "m")
     final class SetItems implements ListViewPatch {
 
+        private final String mPath;
         private final List<HierarchyData> mItems;
 
         @Override
         public GeneratorListViewModel apply(GeneratorListViewModel viewModel) {
             return viewModel.toBuilder()
+                    .path(mPath)
                     .clearItems()
                     .items(mItems)
                     .build();

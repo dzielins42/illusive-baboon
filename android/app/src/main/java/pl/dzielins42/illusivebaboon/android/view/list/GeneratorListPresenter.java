@@ -4,9 +4,6 @@ import android.util.Log;
 
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -44,9 +41,13 @@ public class GeneratorListPresenter
     }
 
     private Observable<ListViewPatch> process(Observable<ListEvent> shared) {
-        Observable<ListViewPatch> init = shared.ofType(ListEvent.Initialize.class)
-                .flatMap(event -> mGeneratorHierarchyRepositoryInteractor.list(null).toObservable())
-                .map(results -> new ListViewPatch.SetItems(results));
+        Observable<ListViewPatch> init = shared.ofType(ListEvent.Load.class)
+                .flatMap(event -> mGeneratorHierarchyRepositoryInteractor.list(event.getPath())
+                        .map(hierarchyData -> new ListViewPatch.SetItems(
+                                event.getPath(), hierarchyData
+                        ))
+                        .toObservable()
+                );
 
         return init;
     }

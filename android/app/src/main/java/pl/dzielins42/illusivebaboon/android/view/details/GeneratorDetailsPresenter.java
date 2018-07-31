@@ -1,5 +1,6 @@
 package pl.dzielins42.illusivebaboon.android.view.details;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter;
@@ -58,9 +59,17 @@ public class GeneratorDetailsPresenter
                 //.map(event -> new DetailsViewPatch.AddMetaData(event.getGeneratorId()));
 
         Observable<DetailsViewPatch> generate = shared.ofType(DetailsEvent.Generate.class)
-                .flatMap(event -> mGeneratorResultsInteractor.generate(event.getGeneratorId(), event.getCount()).toObservable())
+                .flatMap(event -> mGeneratorResultsInteractor.generate(stripPath(event.getGeneratorId()), event.getCount()).toObservable())
                 .map(results -> new DetailsViewPatch.SetResults(results));
 
         return Observable.merge(init, generate);
+    }
+
+    private String stripPath(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return path;
+        }
+        String[] parts = TextUtils.split(path, "/");
+        return parts[parts.length - 1];
     }
 }

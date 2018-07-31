@@ -13,6 +13,7 @@ import pl.dzielins42.illusivebaboon.android.data.HierarchyData;
 @Accessors(prefix = "m")
 @Builder(toBuilder = true)
 public class GeneratorListViewModel {
+    private final String mPath;
     @NonNull
     @Singular
     private final List<HierarchyData> mItems;

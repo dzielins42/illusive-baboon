@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
 import io.reactivex.Observable;
+import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.Subject;
 import pl.dzielins42.illusivebaboon.android.R;
 import pl.dzielins42.illusivebaboon.android.data.HierarchyData;
 import pl.dzielins42.illusivebaboon.android.data.local.FragmentHelloService;
@@ -42,6 +45,10 @@ public class GeneratorListActivityFragment
 
     @BindView(R.id.recycler)
     RecyclerView mRecyclerView;
+
+    private final Subject<ListEvent> mEvents = BehaviorSubject.create();
+
+    private String mPath = null;
 
     private GeneratorListAdapter mAdapter;
 
@@ -93,12 +100,21 @@ public class GeneratorListActivityFragment
     @Override
     public void render(GeneratorListViewModel viewModel) {
         Log.d(TAG, "render() called with: viewModel = [" + viewModel + "]");
+        mPath = viewModel.getPath();
         mAdapter.setItems(viewModel.getItems());
     }
 
     @Override
     public Observable<ListEvent> eventsObservable() {
-        return Observable.just(new ListEvent.Initialize());
+        return mEvents.startWith(new ListEvent.Load(mPath));
+    }
+
+    private String joinWithPath(@NonNull String id) {
+        if (TextUtils.isEmpty(mPath)) {
+            return id;
+        } else {
+            return mPath + "/" + id;
+        }
     }
 
     class GeneratorListViewHolder extends RecyclerView.ViewHolder {
@@ -114,6 +130,10 @@ public class GeneratorListActivityFragment
 
         public void bind(HierarchyData item) {
             mTextView.setText(item.getName());
+
+            itemView.setOnClickListener(view -> mEvents.onNext(
+                    ListEvent.Load.builder().path(joinWithPath(item.getId())).build()
+            ));
         }
     }
 

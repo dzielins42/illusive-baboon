@@ -132,7 +132,7 @@ public class GeneratorDetailsActivity
         if (TextUtils.isEmpty(generatorId)) {
             generatorId = "";
             // TODO remove
-            generatorId = "name.human.male";
+            generatorId = "base/name.human.male";
             // TODO make screen with error
         }
 
