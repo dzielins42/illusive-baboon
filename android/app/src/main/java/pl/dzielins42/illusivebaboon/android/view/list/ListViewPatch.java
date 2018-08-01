@@ -26,4 +26,13 @@ public interface ListViewPatch {
                     .build();
         }
     }
+
+    @Value
+    @Accessors(prefix = "m")
+    final class NoChange implements ListViewPatch {
+        @Override
+        public GeneratorListViewModel apply(GeneratorListViewModel viewModel) {
+            return viewModel;
+        }
+    }
 }

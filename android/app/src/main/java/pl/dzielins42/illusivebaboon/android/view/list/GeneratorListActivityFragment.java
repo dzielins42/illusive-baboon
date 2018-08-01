@@ -20,7 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
 import io.reactivex.Observable;
-import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 import pl.dzielins42.illusivebaboon.android.R;
 import pl.dzielins42.illusivebaboon.android.data.HierarchyData;
@@ -46,7 +46,7 @@ public class GeneratorListActivityFragment
     @BindView(R.id.recycler)
     RecyclerView mRecyclerView;
 
-    private final Subject<ListEvent> mEvents = BehaviorSubject.create();
+    private final Subject<ListEvent> mEvents = PublishSubject.create();
 
     private String mPath = null;
 

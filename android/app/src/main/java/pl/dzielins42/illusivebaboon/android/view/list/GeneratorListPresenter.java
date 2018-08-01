@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 
 import io.reactivex.Observable;
 import pl.dzielins42.illusivebaboon.android.data.interactor.GeneratorHierarchyRepositoryInteractor;
+import pl.dzielins42.illusivebaboon.android.view.NavigationController;
 
 @Singleton
 public class GeneratorListPresenter
@@ -21,6 +22,8 @@ public class GeneratorListPresenter
 
     @Inject
     GeneratorHierarchyRepositoryInteractor mGeneratorHierarchyRepositoryInteractor;
+    @Inject
+    NavigationController mNavigationController;
 
     @Inject
     public GeneratorListPresenter() {
@@ -43,9 +46,16 @@ public class GeneratorListPresenter
     private Observable<ListViewPatch> process(Observable<ListEvent> shared) {
         Observable<ListViewPatch> init = shared.ofType(ListEvent.Load.class)
                 .flatMap(event -> mGeneratorHierarchyRepositoryInteractor.list(event.getPath())
-                        .map(hierarchyData -> new ListViewPatch.SetItems(
-                                event.getPath(), hierarchyData
-                        ))
+                        .map(hierarchyData -> {
+                            if (hierarchyData == null || hierarchyData.isEmpty()) {
+                                mNavigationController.openDetails(event.getPath());
+                                return new ListViewPatch.NoChange();
+                            } else {
+                                return new ListViewPatch.SetItems(
+                                        event.getPath(), hierarchyData
+                                );
+                            }
+                        })
                         .toObservable()
                 );
 
