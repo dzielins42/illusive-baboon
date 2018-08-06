@@ -28,6 +28,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${appcompatVersion}"
     implementation "com.android.support.constraint:constraint-layout:${constraintlayoutVersion}"
     implementation "com.android.support:design:${appcompatVersion}"
+    implementation 'com.android.support:support-v4:27.1.1'
     testImplementation "junit:junit:${junitVersion}"
     testImplementation "org.hamcrest:hamcrest-library:${hamcrestVersion}"
     androidTestImplementation "com.android.support.test:runner:${testrunnerVersion}"
@@ -62,6 +63,9 @@ dependencies {
     implementation "org.apache.commons:commons-lang3:${commonslangVersion}"
     // Gson
     implementation "com.google.code.gson:gson:${gsonVersion}"
+    // Navigation Architecture Component
+    implementation "android.arch.navigation:navigation-fragment:${nacVersion}"
+    implementation "android.arch.navigation:navigation-ui:${nacVersion}"
 
     implementation 'com.github.dzielins42:spongy-elephant:-SNAPSHOT'
 
