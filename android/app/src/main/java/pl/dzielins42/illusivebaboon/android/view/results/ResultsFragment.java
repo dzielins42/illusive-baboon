@@ -30,15 +30,13 @@ import pl.dzielins42.illusivebaboon.android.R;
 import pl.dzielins42.illusivebaboon.android.data.local.ActivityHelloService;
 import pl.dzielins42.illusivebaboon.android.data.local.AppHelloService;
 import pl.dzielins42.illusivebaboon.android.ui.ArrayListAdapter;
-import pl.dzielins42.illusivebaboon.android.view.OnFragmentInteractionListener;
-
 
 public class ResultsFragment
         extends MviFragment<ResultsView, ResultsPresenter>
         implements ResultsView {
 
     private static final String TAG = ResultsFragment.class.getSimpleName();
-    private static final String ARG_GENERATOR_ID = "ARG_GENERATOR_ID";
+    public static final String ARG_PATH = "ARG_PATH";
 
     @Inject
     ResultsPresenter mPresenter;
@@ -54,11 +52,12 @@ public class ResultsFragment
     //@BindView(R.id.fab)
     //FloatingActionButton mFloatingActionButton;
 
+    private String mPath;
     private String mGeneratorId;
     private Adapter mAdapter;
     private final Subject<ResultsEvent> mEvents = PublishSubject.create();
 
-    private OnFragmentInteractionListener mListener;
+    private Host mFragmentHost;
 
     public ResultsFragment() {
         // Required empty public constructor
@@ -67,7 +66,7 @@ public class ResultsFragment
     public static ResultsFragment newInstance(String path) {
         ResultsFragment fragment = new ResultsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_GENERATOR_ID, path);
+        args.putString(ARG_PATH, path);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,7 +75,7 @@ public class ResultsFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mGeneratorId = getArguments().getString(ARG_GENERATOR_ID);
+            mPath = getArguments().getString(ARG_PATH);
         }
         setHasOptionsMenu(true);
     }
@@ -94,9 +93,6 @@ public class ResultsFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d(TAG, "onOptionsItemSelected() called with: item = [" + item + "]");
-        /*if (R.id.menu_generate == item.getItemId()) {
-            Log.d(TAG, "onOptionsItemSelected: ");
-        }*/
         switch(item.getItemId()){
             case R.id.menu_generate:
                 mEvents.onNext(new ResultsEvent.Generate(mGeneratorId, 10));
@@ -130,11 +126,11 @@ public class ResultsFragment
     public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof Host) {
+            mFragmentHost = (Host) context;
         } else {
             throw new RuntimeException(
-                    context.toString() + " must implement OnFragmentInteractionListener"
+                    context.toString() + " must implement " + Host.class.getCanonicalName()
             );
         }
     }
@@ -142,7 +138,7 @@ public class ResultsFragment
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        mFragmentHost = null;
     }
 
     @Override
@@ -175,7 +171,7 @@ public class ResultsFragment
 
     @Override
     public Observable<ResultsEvent> eventsObservable() {
-        return mEvents.startWith(new ResultsEvent.Initialize("base/name.human.male"));
+        return mEvents.startWith(new ResultsEvent.Initialize(mPath));
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -222,5 +218,9 @@ public class ResultsFragment
         protected boolean areContentsTheSame(String oldItem, String newItem) {
             return TextUtils.equals(oldItem, newItem);
         }
+    }
+
+    public interface Host {
+
     }
 }

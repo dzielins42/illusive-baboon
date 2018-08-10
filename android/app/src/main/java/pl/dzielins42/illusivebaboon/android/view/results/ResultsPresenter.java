@@ -42,7 +42,9 @@ public class ResultsPresenter
                         .doOnNext(event -> Log.d(TAG, String.valueOf(event)))
                         .publish(event -> process(event))
                         .doOnError(throwable -> Log.e(TAG, "Error: ", throwable))
-                        .scan(INITIAL_VIEW_MODEL, (model, patch) -> patch.apply(model)),
+                        .scan(INITIAL_VIEW_MODEL, (model, patch) -> patch.apply(model))
+                        // Skip INITIAL_VIEW_MODEL
+                        .skip(1),
                 ResultsView::render
         );
     }

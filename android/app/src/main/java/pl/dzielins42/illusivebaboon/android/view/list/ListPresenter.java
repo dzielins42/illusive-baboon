@@ -1,12 +1,12 @@
 package pl.dzielins42.illusivebaboon.android.view.list;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import io.reactivex.Observable;
 import pl.dzielins42.illusivebaboon.android.data.interactor.GeneratorHierarchyRepositoryInteractor;
@@ -19,6 +19,8 @@ public class ListPresenter
 
     private static final ListViewModel INITIAL_VIEW_MODEL =
             ListViewModel.builder().build();
+
+    private ListView mView;
 
     @Inject
     GeneratorHierarchyRepositoryInteractor mGeneratorHierarchyRepositoryInteractor;
@@ -39,7 +41,9 @@ public class ListPresenter
                         .doOnNext(event -> Log.d(TAG, String.valueOf(event)))
                         .publish(event -> process(event))
                         .doOnError(throwable -> Log.e(TAG, "Error: ", throwable))
-                        .scan(INITIAL_VIEW_MODEL, (model, patch) -> patch.apply(model)),
+                        .scan(INITIAL_VIEW_MODEL, (model, patch) -> patch.apply(model))
+                        // Skip INITIAL_VIEW_MODEL
+                        .skip(1),
                 ListView::render
         );
     }
@@ -60,14 +64,22 @@ public class ListPresenter
         Observable<ListViewPatch> navigateTo = shared.ofType(ListEvent.NavigateTo.class)
                 .map(event -> {
                     final String generatorId = event.getDestination().getGeneratorId();
+                    final String path = event.getDestination().getPath();
                     if (TextUtils.isEmpty(generatorId)) {
-                        Log.d(TAG, "process: navigate to "+event.getDestination().getPath()+" list");
+                        mView.navigateToList(path);
                     } else {
-                        Log.d(TAG, "process: navigate to "+event.getDestination().getPath()+" generator");
+                        mView.navigateToResults(path);
                     }
+                    // No change
                     return (ListViewPatch) viewModel -> viewModel;
                 });
 
         return Observable.merge(initialize, navigateTo);
+    }
+
+    @Override
+    public void attachView(@NonNull ListView view) {
+        super.attachView(view);
+        mView = view;
     }
 }

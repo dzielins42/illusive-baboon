@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,16 +25,15 @@ import pl.dzielins42.illusivebaboon.android.R;
 import pl.dzielins42.illusivebaboon.android.data.ItemData;
 import pl.dzielins42.illusivebaboon.android.data.local.FragmentHelloService;
 import pl.dzielins42.illusivebaboon.android.ui.ArrayListAdapter;
-import pl.dzielins42.illusivebaboon.android.view.OnFragmentInteractionListener;
 
 public class ListFragment
         extends MviFragment<ListView, ListPresenter>
         implements ListView {
 
     private static final String TAG = ListFragment.class.getSimpleName();
-    private static final String ARG_PATH = "ARG_PATH";
+    public static final String ARG_PATH = "ARG_PATH";
 
-    private OnFragmentInteractionListener mListener;
+    private Host mFragmentHost;
 
     private final Subject<ListEvent> mEvents = PublishSubject.create();
 
@@ -100,11 +98,11 @@ public class ListFragment
     public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof Host) {
+            mFragmentHost = (Host) context;
         } else {
             throw new RuntimeException(
-                    context.toString() + " must implement OnFragmentInteractionListener"
+                    context.toString() + " must implement " + Host.class.getCanonicalName()
             );
         }
     }
@@ -112,7 +110,7 @@ public class ListFragment
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        mFragmentHost = null;
     }
 
     @Override
@@ -139,7 +137,20 @@ public class ListFragment
     }
 
     @Override
+    public void navigateToList(String path) {
+        Log.d(TAG, "navigateToList() called with: path = [" + path + "]");
+        mFragmentHost.navigateToList(path);
+    }
+
+    @Override
+    public void navigateToResults(String generatorId) {
+        Log.d(TAG, "navigateToResults() called with: generatorId = [" + generatorId + "]");
+        mFragmentHost.navigateToResults(generatorId);
+    }
+
+    @Override
     public Observable<ListEvent> eventsObservable() {
+        Log.d(TAG, "eventsObservable: "+mPath);
         return mEvents.startWith(new ListEvent.Initialize(mPath));
     }
 
@@ -191,5 +202,11 @@ public class ListFragment
         protected boolean areContentsTheSame(ItemData oldItem, ItemData newItem) {
             return oldItem.equals(newItem);
         }
+    }
+
+    public interface Host {
+        void navigateToList(String path);
+
+        void navigateToResults(String generatorId);
     }
 }

@@ -1,7 +1,6 @@
 package pl.dzielins42.illusivebaboon.android.view;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,10 +18,12 @@ import dagger.android.support.HasSupportFragmentInjector;
 import pl.dzielins42.illusivebaboon.android.R;
 import pl.dzielins42.illusivebaboon.android.data.local.ActivityHelloService;
 import pl.dzielins42.illusivebaboon.android.data.local.AppHelloService;
+import pl.dzielins42.illusivebaboon.android.view.list.ListFragment;
+import pl.dzielins42.illusivebaboon.android.view.results.ResultsFragment;
 
 public class StartActivity
         extends AppCompatActivity
-        implements OnFragmentInteractionListener, HasSupportFragmentInjector {
+        implements ListFragment.Host, ResultsFragment.Host, HasSupportFragmentInjector {
     private static final String TAG = StartActivity.class.getSimpleName();
 
     @Inject
@@ -52,11 +53,6 @@ public class StartActivity
         return super.onSupportNavigateUp();
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-        Log.d(TAG, "onFragmentInteraction() called with: uri = [" + uri + "]");
-    }
-
     private NavController getNavController(){
         return Navigation.findNavController(this, R.id.my_nav_host_fragment);
     }
@@ -78,5 +74,19 @@ public class StartActivity
                 "GeneratorListActivity",
                 "onResume: " + (mActivityHelloService != null ? mActivityHelloService.hello() : "ActivityHelloService is null")
         );
+    }
+
+    @Override
+    public void navigateToList(String path) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ListFragment.ARG_PATH, path);
+        getNavController().navigate(R.id.action_listFragment_self, bundle);
+    }
+
+    @Override
+    public void navigateToResults(String path) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ResultsFragment.ARG_PATH, path);
+        getNavController().navigate(R.id.action_listFragment_to_resultsFragment, bundle);
     }
 }

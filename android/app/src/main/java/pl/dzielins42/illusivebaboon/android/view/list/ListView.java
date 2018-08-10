@@ -8,5 +8,9 @@ public interface ListView extends MvpView {
 
     void render(ListViewModel viewModel);
 
+    void navigateToList(String path);
+
+    void navigateToResults(String generatorId);
+
     Observable<ListEvent> eventsObservable();
 }

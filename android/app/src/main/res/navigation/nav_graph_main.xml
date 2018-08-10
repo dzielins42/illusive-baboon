@@ -25,7 +25,9 @@
         android:id="@+id/resultsFragment"
         android:name="pl.dzielins42.illusivebaboon.android.view.results.ResultsFragment"
         android:label="fragment_results"
-        tools:layout="@layout/fragment_results" />
+        tools:layout="@layout/fragment_results">
+        <argument android:name="ARG_PATH" />
+    </fragment>
     <fragment
         android:id="@+id/listFragmentInitial"
         android:name="pl.dzielins42.illusivebaboon.android.view.list.ListFragment"
