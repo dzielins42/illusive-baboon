@@ -1,18 +1,17 @@
-package pl.dzielins42.illusivebaboon.android.view.details;
+package pl.dzielins42.illusivebaboon.android.view.results;
 
-import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
-public interface DetailsEvent {
+public interface ResultsEvent {
 
     @Value
     @Accessors(prefix = "m")
-    final class Initialize implements DetailsEvent {
+    final class Initialize implements ResultsEvent {
         private final String mPath;
     }
 
-    final class Generate implements DetailsEvent {
+    final class Generate implements ResultsEvent {
 
         private final String mGeneratorId;
         private final int mCount;

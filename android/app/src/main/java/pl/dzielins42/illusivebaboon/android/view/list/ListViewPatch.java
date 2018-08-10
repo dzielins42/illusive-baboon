@@ -4,35 +4,27 @@ import java.util.List;
 
 import lombok.Value;
 import lombok.experimental.Accessors;
-import pl.dzielins42.illusivebaboon.android.data.HierarchyData;
+import pl.dzielins42.illusivebaboon.android.data.ItemData;
 
 public interface ListViewPatch {
 
-    GeneratorListViewModel apply(GeneratorListViewModel viewModel);
+    ListViewModel apply(ListViewModel viewModel);
 
     @Value
     @Accessors(prefix = "m")
-    final class SetItems implements ListViewPatch {
+    final class SetData implements ListViewPatch {
 
         private final String mPath;
-        private final List<HierarchyData> mItems;
+        private final ItemData mData;
+        private final List<ItemData> mItems;
 
         @Override
-        public GeneratorListViewModel apply(GeneratorListViewModel viewModel) {
+        public ListViewModel apply(ListViewModel viewModel) {
             return viewModel.toBuilder()
                     .path(mPath)
                     .clearItems()
                     .items(mItems)
                     .build();
-        }
-    }
-
-    @Value
-    @Accessors(prefix = "m")
-    final class NoChange implements ListViewPatch {
-        @Override
-        public GeneratorListViewModel apply(GeneratorListViewModel viewModel) {
-            return viewModel;
         }
     }
 }

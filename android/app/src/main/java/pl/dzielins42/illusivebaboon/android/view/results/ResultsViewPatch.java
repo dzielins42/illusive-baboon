@@ -1,4 +1,4 @@
-package pl.dzielins42.illusivebaboon.android.view.details;
+package pl.dzielins42.illusivebaboon.android.view.results;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,13 +8,13 @@ import java.util.List;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
-public interface DetailsViewPatch {
+public interface ResultsViewPatch {
 
-    GeneratorDetailsViewModel apply(GeneratorDetailsViewModel viewModel);
+    ResultsViewModel apply(ResultsViewModel viewModel);
 
     @Value
     @Accessors(prefix = "m")
-    final class AddMetaData implements DetailsViewPatch {
+    final class AddMetaData implements ResultsViewPatch {
 
         @NonNull
         private final String mGeneratorId;
@@ -23,7 +23,7 @@ public interface DetailsViewPatch {
         private final String mGeneratorDescription;
 
         @Override
-        public GeneratorDetailsViewModel apply(GeneratorDetailsViewModel viewModel) {
+        public ResultsViewModel apply(ResultsViewModel viewModel) {
             return viewModel.toBuilder()
                     .generatorId(mGeneratorId)
                     .generatorName(mGeneratorName)
@@ -35,13 +35,13 @@ public interface DetailsViewPatch {
 
     @Value
     @Accessors(prefix = "m")
-    final class SetResults implements DetailsViewPatch {
+    final class SetResults implements ResultsViewPatch {
 
         @Nullable
         private final List<String> mResults;
 
         @Override
-        public GeneratorDetailsViewModel apply(GeneratorDetailsViewModel viewModel) {
+        public ResultsViewModel apply(ResultsViewModel viewModel) {
             return viewModel.toBuilder()
                     .results(mResults)
                     .build();

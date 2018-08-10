@@ -8,7 +8,7 @@ import android.util.Log;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import pl.dzielins42.illusivebaboon.android.view.details.GeneratorDetailsActivity;
+import pl.dzielins42.illusivebaboon.android.view.results.GeneratorDetailsActivity;
 
 @Singleton
 public class NavigationController {

@@ -1,6 +1,4 @@
-package pl.dzielins42.illusivebaboon.android.view.details;
-
-import android.support.annotation.NonNull;
+package pl.dzielins42.illusivebaboon.android.view.results;
 
 import java.util.List;
 
@@ -12,7 +10,7 @@ import lombok.experimental.Accessors;
 @Value
 @Accessors(prefix = "m")
 @Builder(toBuilder = true)
-public class GeneratorDetailsViewModel {
+public class ResultsViewModel {
 
     @Singular
     private List<String> mResults;

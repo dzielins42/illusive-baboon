@@ -1,16 +1,16 @@
 [
   {
-    "path":"base",
-    "id": "name.human.male",
+    "path":"base/name.human.male",
+    "generatorId": "name.human.male",
     "name": "test1"
   },
   {
-    "path":"base",
-    "id": "name.human.female",
+    "path":"base/name.human.female",
+    "generatorId": "name.human.female",
     "name": "test2"
   },
   {
-    "id": "base",
+    "path": "base",
     "name": "test0"
   }
 ]

@@ -1,4 +1,4 @@
-package pl.dzielins42.illusivebaboon.android.view.details;
+package pl.dzielins42.illusivebaboon.android.view.results;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -32,15 +32,15 @@ import pl.dzielins42.illusivebaboon.android.data.local.AppHelloService;
 import pl.dzielins42.illusivebaboon.android.ui.ArrayListAdapter;
 
 public class GeneratorDetailsActivity
-        extends MviActivity<GeneratorDetailsView, GeneratorDetailsPresenter>
-        implements GeneratorDetailsView {
+        extends MviActivity<ResultsView, ResultsPresenter>
+        implements ResultsView {
 
     private static final String TAG = GeneratorDetailsActivity.class.getSimpleName();
 
     public static final String KEY_GENERATOR_ID = "GENERATOR_ID";
 
     @Inject
-    GeneratorDetailsPresenter mPresenter;
+    ResultsPresenter mPresenter;
     @Inject
     Context mContext;
     @Inject
@@ -115,19 +115,19 @@ public class GeneratorDetailsActivity
 
     @NonNull
     @Override
-    public GeneratorDetailsPresenter createPresenter() {
+    public ResultsPresenter createPresenter() {
         return mPresenter;
     }
 
     @Override
-    public void render(GeneratorDetailsViewModel viewModel) {
+    public void render(ResultsViewModel viewModel) {
         mGeneratorId = viewModel.getGeneratorId();
         mAdapter.setItems(Lists.reverse(viewModel.getResults()));
         setTitle(viewModel.getGeneratorName());
     }
 
     @Override
-    public Observable<DetailsEvent> eventsObservable() {
+    public Observable<ResultsEvent> eventsObservable() {
         String generatorId = getIntent().getStringExtra(KEY_GENERATOR_ID);
         if (TextUtils.isEmpty(generatorId)) {
             generatorId = "";
@@ -136,10 +136,10 @@ public class GeneratorDetailsActivity
             // TODO make screen with error
         }
 
-        Observable<DetailsEvent> init = Observable.just(new DetailsEvent.Initialize(generatorId));
+        Observable<ResultsEvent> init = Observable.just(new ResultsEvent.Initialize(generatorId));
 
-        Observable<DetailsEvent> fabClicks = RxView.clicks(mFloatingActionButton)
-                .map(ignored -> new DetailsEvent.Generate(mGeneratorId, 10));
+        Observable<ResultsEvent> fabClicks = RxView.clicks(mFloatingActionButton)
+                .map(ignored -> new ResultsEvent.Generate(mGeneratorId, 10));
 
         return Observable.merge(init, fabClicks);
     }

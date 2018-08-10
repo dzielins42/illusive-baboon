@@ -23,36 +23,56 @@ import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 import pl.dzielins42.illusivebaboon.android.R;
-import pl.dzielins42.illusivebaboon.android.data.HierarchyData;
+import pl.dzielins42.illusivebaboon.android.data.ItemData;
 import pl.dzielins42.illusivebaboon.android.data.local.FragmentHelloService;
 import pl.dzielins42.illusivebaboon.android.ui.ArrayListAdapter;
+import pl.dzielins42.illusivebaboon.android.view.OnFragmentInteractionListener;
 
-/**
- * A placeholder fragment containing a simple view.
- */
-public class GeneratorListActivityFragment
-        extends MviFragment<GeneratorListView, GeneratorListPresenter>
-        implements GeneratorListView {
+public class ListFragment
+        extends MviFragment<ListView, ListPresenter>
+        implements ListView {
 
-    private static final String TAG = GeneratorListActivityFragment.class.getSimpleName();
+    private static final String TAG = ListFragment.class.getSimpleName();
+    private static final String ARG_PATH = "ARG_PATH";
+
+    private OnFragmentInteractionListener mListener;
+
+    private final Subject<ListEvent> mEvents = PublishSubject.create();
+
+    private String mPath = null;
+
+    private Adapter mAdapter;
 
     @Inject
     Context mContext;
     @Inject
     FragmentHelloService mFragmentHelloService;
     @Inject
-    GeneratorListPresenter mPresenter;
+    ListPresenter mPresenter;
 
     @BindView(R.id.recycler)
     RecyclerView mRecyclerView;
 
-    private final Subject<ListEvent> mEvents = PublishSubject.create();
+    public ListFragment() {
+        // Required empty public constructor
+    }
 
-    private String mPath = null;
+    public static ListFragment newInstance(String path) {
+        ListFragment fragment = new ListFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PATH, path);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
-    private GeneratorListAdapter mAdapter;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mPath = getArguments().getString(ARG_PATH);
+        }
 
-    public GeneratorListActivityFragment() {
+        Log.d(TAG, "onCreate() called with: " + ARG_PATH + " = [" + mPath + "]");
     }
 
     @Override
@@ -60,7 +80,8 @@ public class GeneratorListActivityFragment
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-        View view = inflater.inflate(R.layout.fragment_generator_list, container, false);
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
 
         ButterKnife.bind(this, view);
 
@@ -69,7 +90,7 @@ public class GeneratorListActivityFragment
                 LinearLayoutManager.VERTICAL,
                 false
         ));
-        mAdapter = new GeneratorListAdapter();
+        mAdapter = new Adapter();
         mRecyclerView.setAdapter(mAdapter);
 
         return view;
@@ -79,12 +100,19 @@ public class GeneratorListActivityFragment
     public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(
+                    context.toString() + " must implement OnFragmentInteractionListener"
+            );
+        }
     }
 
-    @NonNull
     @Override
-    public GeneratorListPresenter createPresenter() {
-        return mPresenter;
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     @Override
@@ -97,8 +125,14 @@ public class GeneratorListActivityFragment
         );
     }
 
+    @NonNull
     @Override
-    public void render(GeneratorListViewModel viewModel) {
+    public ListPresenter createPresenter() {
+        return mPresenter;
+    }
+
+    @Override
+    public void render(ListViewModel viewModel) {
         Log.d(TAG, "render() called with: viewModel = [" + viewModel + "]");
         mPath = viewModel.getPath();
         mAdapter.setItems(viewModel.getItems());
@@ -106,63 +140,55 @@ public class GeneratorListActivityFragment
 
     @Override
     public Observable<ListEvent> eventsObservable() {
-        return mEvents.startWith(new ListEvent.Load(mPath));
+        return mEvents.startWith(new ListEvent.Initialize(mPath));
     }
 
-    private String joinWithPath(@NonNull String id) {
-        if (TextUtils.isEmpty(mPath)) {
-            return id;
-        } else {
-            return mPath + "/" + id;
-        }
-    }
-
-    class GeneratorListViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(android.R.id.text1)
         TextView mTextView;
 
-        public GeneratorListViewHolder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(HierarchyData item) {
+        public void bind(ItemData item) {
             mTextView.setText(item.getName());
 
             itemView.setOnClickListener(view -> mEvents.onNext(
-                    ListEvent.Load.builder().path(joinWithPath(item.getId())).build()
+                    ListEvent.NavigateTo.builder().destination(item).build()
             ));
         }
     }
 
-    class GeneratorListAdapter extends ArrayListAdapter<HierarchyData, GeneratorListViewHolder> {
+    class Adapter extends ArrayListAdapter<ItemData, ViewHolder> {
 
         @NonNull
         @Override
-        public GeneratorListViewHolder onCreateViewHolder(
+        public ViewHolder onCreateViewHolder(
                 @NonNull ViewGroup parent,
                 int viewType
         ) {
             final View view = LayoutInflater.from(mContext).inflate(
                     R.layout.view_generator_result_item, parent, false
             );
-            return new GeneratorListViewHolder(view);
+            return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull GeneratorListViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             holder.bind(getItemAt(position));
         }
 
         @Override
-        protected boolean areItemsTheSame(HierarchyData oldItem, HierarchyData newItem) {
+        protected boolean areItemsTheSame(ItemData oldItem, ItemData newItem) {
             return oldItem.equals(newItem);
         }
 
         @Override
-        protected boolean areContentsTheSame(HierarchyData oldItem, HierarchyData newItem) {
+        protected boolean areContentsTheSame(ItemData oldItem, ItemData newItem) {
             return oldItem.equals(newItem);
         }
     }

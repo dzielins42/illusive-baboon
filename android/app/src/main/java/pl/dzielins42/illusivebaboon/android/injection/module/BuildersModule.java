@@ -4,9 +4,10 @@ import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 import pl.dzielins42.illusivebaboon.android.MainActivity;
 import pl.dzielins42.illusivebaboon.android.MainActivityFragment;
-import pl.dzielins42.illusivebaboon.android.view.details.GeneratorDetailsActivity;
-import pl.dzielins42.illusivebaboon.android.view.list.GeneratorListActivity;
-import pl.dzielins42.illusivebaboon.android.view.list.GeneratorListActivityFragment;
+import pl.dzielins42.illusivebaboon.android.view.StartActivity;
+import pl.dzielins42.illusivebaboon.android.view.list.ListFragment;
+import pl.dzielins42.illusivebaboon.android.view.results.GeneratorDetailsActivity;
+import pl.dzielins42.illusivebaboon.android.view.results.ResultsFragment;
 
 @Module
 public abstract class BuildersModule {
@@ -18,13 +19,16 @@ public abstract class BuildersModule {
     abstract MainActivityFragment bindMainActivityFragment();
 
     @ContributesAndroidInjector
-    abstract GeneratorListActivity bindGeneratorListActivity();
-
-    @ContributesAndroidInjector
-    abstract GeneratorListActivityFragment bindGeneratorListActivityFragment();
-
-    @ContributesAndroidInjector
     abstract GeneratorDetailsActivity bindGeneratorDetailsActivity();
+
+    @ContributesAndroidInjector
+    abstract StartActivity bindStartActivity();
+
+    @ContributesAndroidInjector
+    abstract ListFragment bindListFragment();
+
+    @ContributesAndroidInjector
+    abstract ResultsFragment bindResultsFragment();
 
     // Add bindings for other sub-components here
 }

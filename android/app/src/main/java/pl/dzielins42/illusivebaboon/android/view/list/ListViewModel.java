@@ -7,14 +7,14 @@ import lombok.NonNull;
 import lombok.Singular;
 import lombok.Value;
 import lombok.experimental.Accessors;
-import pl.dzielins42.illusivebaboon.android.data.HierarchyData;
+import pl.dzielins42.illusivebaboon.android.data.ItemData;
 
 @Value
 @Accessors(prefix = "m")
 @Builder(toBuilder = true)
-public class GeneratorListViewModel {
+public class ListViewModel {
     private final String mPath;
     @NonNull
     @Singular
-    private final List<HierarchyData> mItems;
+    private final List<ItemData> mItems;
 }

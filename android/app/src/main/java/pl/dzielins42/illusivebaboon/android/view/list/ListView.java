@@ -4,9 +4,9 @@ import com.hannesdorfmann.mosby3.mvp.MvpView;
 
 import io.reactivex.Observable;
 
-public interface GeneratorListView extends MvpView {
+public interface ListView extends MvpView {
 
-    void render(GeneratorListViewModel viewModel);
+    void render(ListViewModel viewModel);
 
     Observable<ListEvent> eventsObservable();
 }

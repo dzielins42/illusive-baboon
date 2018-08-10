@@ -16,6 +16,7 @@ import javax.inject.Singleton;
 import io.reactivex.Maybe;
 import pl.dzielins42.illusivebaboon.android.R;
 import pl.dzielins42.illusivebaboon.android.data.HierarchyData;
+import pl.dzielins42.illusivebaboon.android.data.ItemData;
 import pl.dzielins42.illusivebaboon.android.data.local.JSONHierarchyReader;
 import pl.dzielins42.illusivebaboon.android.data.local.repository.GeneratorHierarchyRepository;
 
@@ -35,8 +36,8 @@ public class GeneratorHierarchyRepositoryInteractor {
         mContext = context;
         mRepository = repository;
 
-        // Load local data
-        List<Pair<String, HierarchyData>> data = null;
+        // Initialize local data
+        List<ItemData> data = null;
         try (InputStream is = mContext.getResources().openRawResource(R.raw.local)) {
             Reader reader = new InputStreamReader(is, "UTF-8");
 
@@ -48,14 +49,10 @@ public class GeneratorHierarchyRepositoryInteractor {
         }
 
         if (data != null && !data.isEmpty()) {
-            for (Pair<String, HierarchyData> item : data) {
-                mRepository.add(item.first, item.second);
+            for (ItemData item : data) {
+                mRepository.add(item);
             }
         }
-    }
-
-    public Maybe<List<HierarchyData>> list(String path) {
-        return Maybe.just(mRepository.getChildren(path));
     }
 
     public Maybe<HierarchyData> get(String path) {

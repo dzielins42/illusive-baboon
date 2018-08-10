@@ -2,6 +2,8 @@ package pl.dzielins42.illusivebaboon.android.data.local.repository;
 
 import android.text.TextUtils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,51 +12,63 @@ import javax.inject.Singleton;
 
 import lombok.NonNull;
 import pl.dzielins42.illusivebaboon.android.data.HierarchyData;
+import pl.dzielins42.illusivebaboon.android.data.ItemData;
 import pl.dzielins42.illusivebaboon.android.data.MapTreeNode;
 
 @Singleton
 public class GeneratorHierarchyRepository {
 
-    final MapTreeNode<HierarchyData> mRoot = MapTreeNode.<HierarchyData>builder().id("").build();
+    final private ItemData mRootItemData = ItemData.builder().path("").name("").build();
+    final MapTreeNode<ItemData> mRoot = MapTreeNode.<ItemData>builder().id("").data(mRootItemData).build();
 
     @Inject
     public GeneratorHierarchyRepository() {
     }
 
-    public void add(String path, @NonNull HierarchyData data) {
-        MapTreeNode<HierarchyData> node = MapTreeNode.<HierarchyData>builder()
-                .id(data.getId())
+    public void add(@NonNull ItemData data) {
+        final String parent;
+        final String id;
+        if (StringUtils.contains(data.getPath(), "/")) {
+            parent = StringUtils.substringBeforeLast(data.getPath(), "/");
+            id = StringUtils.substringAfterLast(data.getPath(), "/");
+        } else {
+            parent = null;
+            id = data.getPath();
+        }
+        MapTreeNode<ItemData> node = MapTreeNode.<ItemData>builder()
+                .id(id)
                 .data(data)
                 .build();
-        MapTreeNode<HierarchyData> parentNode = getNode(path);
-        if (!parentNode.getChildren().containsKey(data.getId())) {
+        MapTreeNode<ItemData> parentNode = getNode(parent);
+        if (!parentNode.getChildren().containsKey(id)) {
             node.setParent(parentNode);
-            parentNode.getChildren().put(data.getId(), node);
+            parentNode.getChildren().put(id, node);
         }
     }
 
-    public List<HierarchyData> getChildren(String path) {
-        MapTreeNode<HierarchyData> node = getNode(path);
-
-        return convertNodesToData(node.getChildren().values());
-    }
-
     public HierarchyData get(String path) {
-        MapTreeNode<HierarchyData> node = getNode(path);
+        MapTreeNode<ItemData> node = getNode(path);
 
-        return node != null ? node.getData() : null;
+        if (node == null) {
+            return null;
+        }
+
+        return HierarchyData.builder()
+                .data(node.getData())
+                .children(convertNodesToData(node.getChildren().values()))
+                .build();
     }
 
-    private MapTreeNode<HierarchyData> getNode(String path) {
+    private MapTreeNode<ItemData> getNode(String path) {
         if (TextUtils.isEmpty(path)) {
             return mRoot;
         }
 
         String[] parts = TextUtils.split(path, "/");
 
-        MapTreeNode<HierarchyData> currentNode = mRoot;
+        MapTreeNode<ItemData> currentNode = mRoot;
         for (int i = 0; i < parts.length; i++) {
-            MapTreeNode<HierarchyData> nextNode = currentNode.getChildren().get(parts[i]);
+            MapTreeNode<ItemData> nextNode = currentNode.getChildren().get(parts[i]);
             if (nextNode == null) {
                 throw new IllegalStateException("Cannot find " + path + " (no " + parts[i] + ")");
             }
@@ -64,12 +78,16 @@ public class GeneratorHierarchyRepository {
         return currentNode;
     }
 
-    private List<HierarchyData> convertNodesToData(
-            @NonNull Iterable<MapTreeNode<HierarchyData>> nodes
+    private List<ItemData> convertNodesToData(
+            @NonNull Iterable<MapTreeNode<ItemData>> nodes
     ) {
-        List<HierarchyData> data = new ArrayList<>();
+        if (nodes == null) {
+            return null;
+        }
 
-        for (MapTreeNode<HierarchyData> node : nodes) {
+        List<ItemData> data = new ArrayList<>();
+
+        for (MapTreeNode<ItemData> node : nodes) {
             data.add(node.getData());
         }
 

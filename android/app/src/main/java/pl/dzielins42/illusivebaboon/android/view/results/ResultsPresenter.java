@@ -1,4 +1,4 @@
-package pl.dzielins42.illusivebaboon.android.view.details;
+package pl.dzielins42.illusivebaboon.android.view.results;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,14 +13,13 @@ import pl.dzielins42.illusivebaboon.android.data.interactor.GeneratorHierarchyRe
 import pl.dzielins42.illusivebaboon.android.data.interactor.GeneratorRepositoryInteractor;
 import pl.dzielins42.illusivebaboon.android.data.interactor.GeneratorResultsInteractor;
 
-@Singleton
-public class GeneratorDetailsPresenter
-        extends MviBasePresenter<GeneratorDetailsView, GeneratorDetailsViewModel> {
+public class ResultsPresenter
+        extends MviBasePresenter<ResultsView, ResultsViewModel> {
 
-    private static final String TAG = GeneratorDetailsPresenter.class.getSimpleName();
+    private static final String TAG = ResultsPresenter.class.getSimpleName();
 
-    private static final GeneratorDetailsViewModel INITIAL_VIEW_MODEL =
-            GeneratorDetailsViewModel.builder().build();
+    private static final ResultsViewModel INITIAL_VIEW_MODEL =
+            ResultsViewModel.builder().build();
 
     @Inject
     GeneratorResultsInteractor mGeneratorResultsInteractor;
@@ -30,7 +29,7 @@ public class GeneratorDetailsPresenter
     GeneratorHierarchyRepositoryInteractor mGeneratorHierarchyRepositoryInteractor;
 
     @Inject
-    public GeneratorDetailsPresenter() {
+    public ResultsPresenter() {
         super(INITIAL_VIEW_MODEL);
     }
 
@@ -39,28 +38,29 @@ public class GeneratorDetailsPresenter
         // Intents generate Patches which are applied to previous State producing new State
 
         subscribeViewState(
-                intent(GeneratorDetailsView::eventsObservable)
+                intent(ResultsView::eventsObservable)
+                        .doOnNext(event -> Log.d(TAG, String.valueOf(event)))
                         .publish(event -> process(event))
                         .doOnError(throwable -> Log.e(TAG, "Error: ", throwable))
                         .scan(INITIAL_VIEW_MODEL, (model, patch) -> patch.apply(model)),
-                GeneratorDetailsView::render
+                ResultsView::render
         );
     }
 
-    private Observable<DetailsViewPatch> process(Observable<DetailsEvent> shared) {
-        Observable<DetailsViewPatch> init = shared.ofType(DetailsEvent.Initialize.class)
+    private Observable<ResultsViewPatch> process(Observable<ResultsEvent> shared) {
+        Observable<ResultsViewPatch> init = shared.ofType(ResultsEvent.Initialize.class)
                 .flatMap(event -> mGeneratorHierarchyRepositoryInteractor.get(event.getPath()).toObservable())
-                .map(results -> new DetailsViewPatch.AddMetaData(
-                             results.getId(),
-                             results.getName(),
-                             results.getDescription()
+                .map(results -> new ResultsViewPatch.AddMetaData(
+                             results.getData().getGeneratorId(),
+                             results.getData().getName(),
+                             results.getData().getDescription()
                      )
                 );
-                //.map(event -> new DetailsViewPatch.AddMetaData(event.getGeneratorId()));
+                //.map(event -> new ResultsViewPatch.AddMetaData(event.getGeneratorId()));
 
-        Observable<DetailsViewPatch> generate = shared.ofType(DetailsEvent.Generate.class)
+        Observable<ResultsViewPatch> generate = shared.ofType(ResultsEvent.Generate.class)
                 .flatMap(event -> mGeneratorResultsInteractor.generate(stripPath(event.getGeneratorId()), event.getCount()).toObservable())
-                .map(results -> new DetailsViewPatch.SetResults(results));
+                .map(results -> new ResultsViewPatch.SetResults(results));
 
         return Observable.merge(init, generate);
     }

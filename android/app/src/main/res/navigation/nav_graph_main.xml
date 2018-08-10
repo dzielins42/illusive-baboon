@@ -7,43 +7,38 @@
 
     <fragment
         android:id="@+id/listFragment"
-        android:name="pl.dzielins42.illusivebaboon.android.view.ListFragment"
+        android:name="pl.dzielins42.illusivebaboon.android.view.list.ListFragment"
         android:label="fragment_list"
         tools:layout="@layout/fragment_list">
         <action
             android:id="@+id/action_listFragment_to_resultsFragment"
             app:destination="@id/resultsFragment" />
-        <argument
-            android:name="PATH"
-            android:defaultValue="0" />
+        <argument android:name="ARG_PATH" />
         <action
             android:id="@+id/action_listFragment_self"
             app:destination="@id/listFragment"
-            app:popUpTo="@id/listFragment"  >
-            <argument
-                android:name="PATH"
-                android:defaultValue="0" />
+            app:popUpTo="@id/listFragment">
+            <argument android:name="ARG_PATH" />
         </action>
     </fragment>
     <fragment
         android:id="@+id/resultsFragment"
-        android:name="pl.dzielins42.illusivebaboon.android.view.ResultsFragment"
+        android:name="pl.dzielins42.illusivebaboon.android.view.results.ResultsFragment"
         android:label="fragment_results"
         tools:layout="@layout/fragment_results" />
     <fragment
         android:id="@+id/listFragmentInitial"
-        android:name="pl.dzielins42.illusivebaboon.android.view.ListFragment"
+        android:name="pl.dzielins42.illusivebaboon.android.view.list.ListFragment"
         android:label="fragment_list"
         tools:layout="@layout/fragment_list">
         <action
             android:id="@+id/action_listFragment_self"
-            app:destination="@id/listFragment" >
-            <argument
-                android:name="PATH"
-                android:defaultValue="0" />
+            app:destination="@id/listFragment">
+            <argument android:name="ARG_PATH" />
         </action>
         <action
             android:id="@+id/action_listFragment_to_resultsFragment"
             app:destination="@id/resultsFragment" />
+        <argument android:name="ARG_PATH" />
     </fragment>
 </navigation>
