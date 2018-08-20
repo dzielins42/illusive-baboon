@@ -24,12 +24,17 @@ public interface ResultsViewPatch {
 
         @Override
         public ResultsViewModel apply(ResultsViewModel viewModel) {
-            return viewModel.toBuilder()
-                    .generatorId(mGeneratorId)
+            ResultsViewModel.ResultsViewModelBuilder builder = viewModel.toBuilder();
+
+            if (!mGeneratorId.equals(viewModel.getGeneratorId())) {
+                builder.clearResults();
+            }
+
+            builder.generatorId(mGeneratorId)
                     .generatorName(mGeneratorName)
-                    .generatorDescription(mGeneratorDescription)
-                    .clearResults()
-                    .build();
+                    .generatorDescription(mGeneratorDescription);
+
+            return builder.build();
         }
     }
 
