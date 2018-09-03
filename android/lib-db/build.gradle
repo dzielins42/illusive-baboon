@@ -1,13 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
-
-
+    compileSdkVersion compileSdk
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
 
@@ -36,8 +34,13 @@ dependencies {
     testImplementation "junit:junit:${junitVersion}"
     androidTestImplementation "com.android.support.test:runner:${testrunnerVersion}"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:${espressoVersion}"
+    // Lombok
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     // Room
-    implementation "androidx.room:room-runtime:${roomVersion}"
-    annotationProcessor "androidx.room:room-compiler:${roomVersion}"
-    testImplementation "androidx.room:room-testing:${roomVersion}"
+    implementation "android.arch.persistence.room:runtime:${roomVersion}"
+    annotationProcessor "android.arch.persistence.room:compiler:${roomVersion}"
+    androidTestImplementation "android.arch.persistence.room:testing:${roomVersion}"
+    // Guava
+    androidTestImplementation "com.google.guava:guava:${guavaVersion}"
 }
