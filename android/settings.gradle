@@ -1,1 +1,1 @@
-include ':app', ':lib-parser', ':lib-common'
+include ':app', ':lib-parser', ':lib-common', ':lib-db'

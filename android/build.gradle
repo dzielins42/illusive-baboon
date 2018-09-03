@@ -49,4 +49,5 @@ ext {
     rxjavaVersion = '2.1.16'
     rxbindingVersion = '2.1.1'
     rxandroidVersion = '2.0.2'
+    roomVersion = '2.0.0-beta01'
 }
