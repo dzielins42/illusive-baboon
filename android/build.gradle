@@ -30,6 +30,7 @@ task clean(type: Delete) {
 ext {
     compileSdk = 27
 
+    leakcanaryVersion = '1.6.1'
     nacVersion = '1.0.0-alpha04'
     gsonVersion = '2.8.5'
     hamcrestVersion = '1.3'

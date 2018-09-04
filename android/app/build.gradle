@@ -66,6 +66,10 @@ dependencies {
     // Navigation Architecture Component
     implementation "android.arch.navigation:navigation-fragment:${nacVersion}"
     implementation "android.arch.navigation:navigation-ui:${nacVersion}"
+    // LeakCanary
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:${leakcanaryVersion}"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${leakcanaryVersion}"
+    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:${leakcanaryVersion}"
 
     implementation 'com.github.dzielins42:spongy-elephant:-SNAPSHOT'
 
